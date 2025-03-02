@@ -2,3 +2,19 @@ body{
   color: white;
   background-color: #222;
 }
+
+input::placeholder{
+  color: gainsboro !important;
+}
+
+.hidden-input{
+  all: unset;
+  text-align: end;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
