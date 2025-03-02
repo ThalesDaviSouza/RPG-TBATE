@@ -25,4 +25,8 @@ const loadCharacterData = (app) => {
   else if(localStorage.characterMana){
     app.character.actualMana = localStorage.characterMana;
   }
+ 
+  if(localStorage.characterElements) {
+    app.character.elements = JSON.parse(localStorage.characterElements);
+  }
 }

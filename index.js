@@ -14,12 +14,15 @@ createApp({
       actualMana: 0,
       life: 0,
       actualLife: 0,
+      elements: []
     })
 
     const actualPage = ref(pages.homePage)
     
     const manaAux = ref(0);
     const lifeAux = ref(0);
+
+    const modifiers = ref([]);
     
     function setPageTab(page){
       actualPage.value = page;
@@ -44,6 +47,33 @@ createApp({
       character.actualLife = (parseInt(lifeAux.value) + parseInt(character.actualLife));
       lifeAux.value = character.actualLife;
     }
+    function modifierFactory(){
+      return {
+        element: null,
+        nivel: null,
+      }
+    }
+    function addModifier(){
+      modifiers.value.push(modifierFactory());
+    }
+    function characterElementFactory(id, nivel){
+      return {
+        id: id,
+        nivel: nivel
+      }
+    }
+    function updateElements(id, nivel){
+      if(character.elements.find(elem => elem.id == id)){
+        character.elements = character.elements.map(elem => elem.id == id ? characterElementFactory(id, nivel) : elem);
+      }
+      else{
+        character.elements.push(characterElementFactory(id, nivel))
+      }
+    }
+
+    function hasElement(elementId){
+      return character.elements.find(elem => elem.id == elementId) != undefined;
+    }
 
     watch(character, async (newValue) => {
       localStorage.setItem('characterName', newValue.name)
@@ -52,6 +82,7 @@ createApp({
       localStorage.setItem('characterLife', newValue.life)
       localStorage.setItem('characterActualLife', newValue.actualLife)
       localStorage.setItem('characterActualMana', newValue.actualMana)
+      localStorage.setItem('characterElements', JSON.stringify(newValue.elements))
     })
 
     return {
@@ -59,6 +90,9 @@ createApp({
       actualPage,
       pages,
       character,
+      elements,
+      modifiers,
+      effectTypes,
       
       // Functions
       setPageTab,
@@ -67,7 +101,10 @@ createApp({
       computeManaChange,
       saveActualMana,
       saveActualLife,
-      computeLifeChange
+      computeLifeChange,
+      addModifier,
+      updateElements,
+      hasElement,
     }
   },
   mounted(){
