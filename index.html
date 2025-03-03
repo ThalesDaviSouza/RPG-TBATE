@@ -114,45 +114,85 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <header class="d-flex flex-row">
+            <header class="d-flex flex-row align-items-baseline">
               <button class="btn btn-outline-light" @click="addModifier()"><i class="bi bi-plus-circle"></i></button>
+              <h5 class="mx-3">Custo: {{ getManaTotalCost() }}</h5>
+              <h5>Efeito: {{ getModifiersResume() }}</h5>
             </header>
             <div>
-              <div class="btn-group dropend" v-for="modifier in modifiers">
+              <div class="btn-group dropend" v-for="(modifier, modifierId) in modifiers">
                 
-                <button type="button" class="btn btn-secondary">
-                  {{ modifier.element == null ? 'Selecione o modificador' : modifier.element.name }}
-                </button>
-                <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                  <span class="visually-hidden">Toggle Dropend</span>
-                </button>
+                <button class="dropdown-toggle btn btn-outline-light my-3 me-2 d-flex flex-row d-flex align-items-center" data-bs-auto-close="outside" data-bs-toggle="dropdown">
+                  <div class="me-2">
+                    <div>
+                      <span>
+                        {{ modifier.element == null ? 'Selecione o modificador' : modifier.element.name }}
+                      </span>
+                      <span>
+                        {{ modifier.effectType == null ? '' : ' - ' + modifier.effectType }}
+                      </span>
+                      <span>
+                        {{ modifier.nivel == null ? '' : ' ' + modifier.nivel }}
+                      </span>
+                    </div>
+                    <div v-if="modificadorIsDefined(modifier)">
+                      <span v-for="elementEffect in [getElementEffect(modifier.elementId, modifier.nivel)]">
+                        <small>
+                          {{
+                            modifier.effectType == effectTypes.dano
+                            ? elementEffect.dano
+                            : modifier.effectType == effectTypes.danoSecondary
+                            ? elementEffect.danoSecondary
+                            : modifier.effectType == effectTypes.buff
+                            ? elementEffect.buff
+                            : modifier.effectType == effectTypes.area
+                            ? elementEffect.area
+                            : 'Não implementado'
+                          }}
+                          {{' - '}}
+                        </small>
+                        <small>
+                          {{ modifier.effectType == effectTypes.dano ? elementEffect.cost : elementEffect.costSecondary }}
+                           de mana
+                        </small>
+                      </span>
+                    </div>
+                  </div>
 
-                <ul class="dropdown-menu bg-dark">
-                  <li class="dropdown-item dropend btn-group hover-h" v-for="effectType in effectTypes">
-                      <button type="button" class="btn btn-outline-light">
-                        {{ effectType }}
-                      </button>
-                      <button type="button" class="btn btn-outline-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="visually-hidden">Toggle Dropend</span>
-                      </button>
-                      
-                      <ul class="dropdown-menu">
-                        <template v-for="(element, elementId) in elements">
-                          <li v-if="hasElement(elementId)">
-                            <button class="dropdown-item">{{element.name}}</button>
-                          </li>
-                        </template>
-                      </ul>
-
+                </button>
+                <ul class="dropdown-menu">
+                  <li class="dropend" v-for="effectType in effectTypes">
+                    <a class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                      {{ effectType }}
+                    </a>
+                    <ul class="dropdown-menu">
+                      <template v-for="(element, elementId) in elements">
+                        <li class="dropend" v-if="hasElement(elementId)">
+                          <a class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                            {{ element.name }}
+                          </a>
+                          <ul class="dropdown-menu">
+                            <li class="dropdown-item" v-for="nivel in parseInt(getElementNivel(elementId))">
+                              <a class="dropdown-item" @click="updateModifiers(modifierId, effectType, elementId, nivel)">
+                                {{ nivel }}
+                              </a>
+                            </li>
+                          </ul>
+                        </li>
+                      </template>
+                    </ul>
                   </li>
                 </ul>
 
               </div>
             </div>
           </div>
-          <div class="modal-footer">
+          <div class="modal-footer d-flex flex-row justify-content-start">
+            <div class="flex-grow-1">
+              <button type="button" class="btn btn-danger" @click="clearModifiers()">Limpar Magia</button>
+            </div>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-            <button type="button" class="btn btn-primary">Criar Magia</button>
+            <button type="button" class="btn btn-success">Criar Magia</button>
           </div>
         </div>
       </div>

@@ -18,25 +18,3 @@ input[type=number]::-webkit-outer-spin-button {
   -moz-appearance: none;
   appearance: none;
 }
-
-
-.dropend:hover > .dropdown-menu {
-  display: block;
-  margin-top: 0.125em;
-  margin-left: 0.125em;
-}
-
-.dropend:hover > .dropdown-menu {
-  position: absolute;
-  top: 0;
-  left: 100%;
-}
-
-.dropdown .dropdown-menu {
-  display: none;
-}
-
-.hover-h:hover{
-  background-color: rgb(167, 167, 167) !important;
-}
-
