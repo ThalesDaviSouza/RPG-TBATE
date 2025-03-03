@@ -193,6 +193,10 @@ createApp({
       return resume;
     }
 
+    function removeModifier(modifierId){
+      modifiers.value.splice(modifierId, 1);
+    }
+
     watch(character, async (newValue) => {
       localStorage.setItem('characterName', newValue.name)
       localStorage.setItem('characterRace', newValue.race)
@@ -230,6 +234,7 @@ createApp({
       clearModifiers,
       getManaTotalCost,
       getModifiersResume,
+      removeModifier
     }
   },
   mounted(){
