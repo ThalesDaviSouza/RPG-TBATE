@@ -29,4 +29,8 @@ const loadCharacterData = (app) => {
   if(localStorage.characterElements) {
     app.character.elements = JSON.parse(localStorage.characterElements);
   }
+ 
+  if(localStorage.characterSpells) {
+    app.character.spells = JSON.parse(localStorage.characterSpells);
+  }
 }

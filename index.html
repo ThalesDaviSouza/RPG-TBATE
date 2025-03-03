@@ -58,7 +58,26 @@
     <div class="container mt-2" v-show="actualPage == pages.homePage">
       <h1>Home</h1>
       <h2>Magias</h2>
-      <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#criarMagiasModal">Criar magia</button>
+      <div class="my-3 col-4 d-flex flex-row align-items-center" v-for="(spell, spellId) in character.spells">
+        <button class="btn btn-sm btn-outline-light d-flex flex-row align-items-center justify-content-between w-100" @click="loadSpellOnModal(spellId)" data-bs-toggle="modal" data-bs-target="#criarMagiasModal">
+          <div class="flex-grow-1">
+            <h5>{{ spell.name }} </h5>
+            <span>{{ getModifiersResume(spellId) }} | </span>
+            <template v-for="totalCost in [getManaTotalCost(spellId)]">
+              <span :class="{'text-danger' : totalCost > maxManaPerTurn() }">{{ totalCost }} mana</span>
+            </template>
+          </div>
+          <a>
+            <i class="bi bi-pencil-square"></i>
+          </a>
+        </button>
+        <a class="btn btn-outline-info ms-3" @click="castSpell(spellId)">
+          <i class="bi bi-bullseye"></i>
+        </a>
+      </div>
+      <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#criarMagiasModal" @click="clearModal()">
+        Criar magia
+      </button>
 
     </div>
 
@@ -72,10 +91,11 @@
           <input type="text" class="form-control text-bg-dark rounded-pill p-1 px-3" placeholder="Raça" aria-label="Raça do Personagem" id="race" v-model="character.race"> <br/>
         </section>
         <section class="col-4">
-          <label for="life">Life: </label>
+          <label for="life">Vida: </label>
           <input type="number" min="0" step="1" class="form-control text-bg-dark rounded-pill p-1 px-3" placeholder="Vida Máx." aria-label="Vida" id="life" v-model="character.life"> <br/>
           <label for="mana">Mana: </label>
           <input type="number" min="0" step="1" class="form-control text-bg-dark rounded-pill p-1 px-3" placeholder="Mana Máx." aria-label="Mana" id="mana" v-model="character.mana"> <br/>
+          <span>Gasto Máx. por turno: {{ maxManaPerTurn() }}</span>
         </section>
       </div>
       
@@ -110,13 +130,15 @@
       <div class="modal-xl modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content h-75 bg-dark">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="criarMagiasModalLabel">Criar/Editar Magias</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h1 class="modal-title fs-5 me-3" id="criarMagiasModalLabel">Criar/Editar</h1>
+            <input type="text" class="form-control text-bg-dark rounded-pill p-1 px-3" placeholder="Nome da Magia" id="spellName" aria-label="Nome da Magia" v-model="spellName"> <br/>
           </div>
           <div class="modal-body">
             <header class="d-flex flex-row align-items-baseline">
               <button class="btn btn-outline-light" @click="addModifier()"><i class="bi bi-plus-circle"></i></button>
-              <h5 class="mx-3">Custo: {{ getManaTotalCost() }}</h5>
+              <template v-for="totalCost in [getManaTotalCost()]">
+                <h5 class="mx-3" :class="{'text-danger' : totalCost > maxManaPerTurn() }">Custo: {{ totalCost }}</h5>
+              </template>
               <h5>Efeito: {{ getModifiersResume() }}</h5>
             </header>
             <div>
@@ -195,12 +217,13 @@
             <div class="flex-grow-1">
               <button type="button" class="btn btn-danger" @click="clearModifiers()">Limpar Magia</button>
             </div>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-            <button type="button" class="btn btn-success">Criar Magia</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="criarMagiasModalCloseBtn">Fechar</button>
+            <button type="button" class="btn btn-success" @click="saveSpell()">Criar Magia</button>
           </div>
         </div>
       </div>
     </div>
+    
   </main>
 </body>
 

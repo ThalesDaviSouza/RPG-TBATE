@@ -14,7 +14,8 @@ createApp({
       actualMana: 0,
       life: 0,
       actualLife: 0,
-      elements: []
+      elements: [],
+      spells: [],
     })
 
     const actualPage = ref(pages.homePage)
@@ -22,6 +23,8 @@ createApp({
     const manaAux = ref(0);
     const lifeAux = ref(0);
 
+    const spellIdAux = ref(-1);
+    const spellName = ref('');
     const modifiers = ref([]);
     
     function setPageTab(page){
@@ -125,10 +128,18 @@ createApp({
       modifiers.value = [];
     }
 
-    function getManaTotalCost(){
+    function getManaTotalCost(spellId){
+      let mods = undefined;
+      if(spellId == undefined){
+        mods = modifiers.value;
+      }
+      else{
+        mods = character.spells[spellId].modifiers;
+      }
+
       let totalCost = 0;
-      for(let i = 0; i < modifiers.value.length; i++){
-        let mod = modifiers.value[i]
+      for(let i = 0; i < mods.length; i++){
+        let mod = mods[i]
 
         if(!modificadorIsDefined(mod)){
           continue;
@@ -146,14 +157,22 @@ createApp({
       return totalCost;
     }
 
-    function getModifiersResume(){
+    function getModifiersResume(spellId){
+      let mods = undefined;
       let resume = '';
       let totalBuff = 0;
       let totalDices = '';
       let area = '';
 
-      for(let i = 0; i < modifiers.value.length; i++){
-        let mod = modifiers.value[i]
+      if(spellId == undefined){
+        mods = modifiers.value;
+      }
+      else{
+        mods = character.spells[spellId].modifiers;
+      }
+
+      for(let i = 0; i < mods.length; i++){
+        let mod = mods[i]
 
         if(!modificadorIsDefined(mod)){
           continue;
@@ -197,6 +216,49 @@ createApp({
       modifiers.value.splice(modifierId, 1);
     }
 
+    function spellFactory(spellName, modifiers){
+      return {
+        name: spellName,
+        modifiers: modifiers.value.map(a => ({...a}))
+      }
+    }
+
+    function saveSpell(){
+      if(spellName.value == ''){
+        console.log(spellName.value)
+        return;
+      }
+      if(spellIdAux.value > -1){
+        character.spells.map((spell, id) => id == spellIdAux ? spellFactory(spellName.value, modifiers) : spell)  
+      }
+      else{
+        character.spells.push(spellFactory(spellName.value, modifiers))
+      }
+      document.getElementById('criarMagiasModalCloseBtn').click();
+    }
+
+    function loadSpellOnModal(spellId){
+      let spell = character.spells[spellId];
+      spellName.value = spell.name;
+      modifiers.value = spell.modifiers;
+      spellIdAux.value = spellId; 
+    }
+
+    function clearModal(){
+      spellIdAux.value = -1; 
+      spellName.value = '';
+      modifiers.value = [];
+    }
+
+    function castSpell(spellId){
+      let cost = getManaTotalCost(spellId);
+      character.actualMana -= cost;
+    }
+
+    function maxManaPerTurn(){
+      return Math.ceil(character.mana / 4);
+    }
+
     watch(character, async (newValue) => {
       localStorage.setItem('characterName', newValue.name)
       localStorage.setItem('characterRace', newValue.race)
@@ -205,6 +267,7 @@ createApp({
       localStorage.setItem('characterActualLife', newValue.actualLife)
       localStorage.setItem('characterActualMana', newValue.actualMana)
       localStorage.setItem('characterElements', JSON.stringify(newValue.elements))
+      localStorage.setItem('characterSpells', JSON.stringify(newValue.spells))
     })
 
     return {
@@ -215,6 +278,7 @@ createApp({
       elements,
       modifiers,
       effectTypes,
+      spellName,
       
       // Functions
       setPageTab,
@@ -234,11 +298,15 @@ createApp({
       clearModifiers,
       getManaTotalCost,
       getModifiersResume,
-      removeModifier
+      removeModifier,
+      saveSpell,
+      loadSpellOnModal,
+      clearModal,
+      castSpell,
+      maxManaPerTurn
     }
   },
   mounted(){
     loadCharacterData(this);
-    // preparerMultilevelDropdown();
   }
 }).mount('#app')
