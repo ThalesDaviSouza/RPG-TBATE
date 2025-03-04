@@ -1,6 +1,7 @@
 body{
   color: white;
   background-color: #222;
+  min-height: 100vh;
 }
 
 input::placeholder{
@@ -21,4 +22,25 @@ input[type=number]::-webkit-outer-spin-button {
 
 .dropdown-item:hover{
   cursor: pointer;
+}
+
+footer{
+  background-color: #111111;
+}
+
+footer ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+footer a{
+  color: chocolate;
+  text-decoration: none;
+  transition: all 0.25s;
+}
+
+footer a:hover{
+  color: rgb(219, 133, 72);
+  font-weight: bold;
 }

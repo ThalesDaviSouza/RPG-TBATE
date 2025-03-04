@@ -33,4 +33,12 @@ const loadCharacterData = (app) => {
   if(localStorage.characterSpells) {
     app.character.spells = JSON.parse(localStorage.characterSpells);
   }
+  
+  if(localStorage.spellsHistory) {
+    app.spellsHistory = JSON.parse(localStorage.spellsHistory);
+  }
+  
+  if(localStorage.spellsTurnHistory) {
+    app.spellsTurnHistory = JSON.parse(localStorage.spellsTurnHistory);
+  }
 }

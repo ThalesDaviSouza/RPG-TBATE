@@ -5,6 +5,7 @@ createApp({
     const pages = {
       homePage: 0,
       perfilPage: 1,
+      historyPage: 2,
     }
 
     const character = reactive({
@@ -17,6 +18,9 @@ createApp({
       elements: [],
       spells: [],
     })
+
+    const spellsHistory = ref([]);
+    const spellsTurnHistory = ref([]);
 
     const actualPage = ref(pages.homePage)
     
@@ -128,13 +132,20 @@ createApp({
       modifiers.value = [];
     }
 
-    function getManaTotalCost(spellId){
+    function getManaTotalCost(spellId, spellModifiers){
       let mods = undefined;
-      if(spellId == undefined){
+
+      if(spellModifiers != undefined){
+        mods = spellModifiers;
+      }
+      else if(spellId != undefined){
+        mods = character.spells[spellId].modifiers;
+      }
+      else if(modifiers != undefined){
         mods = modifiers.value;
       }
       else{
-        mods = character.spells[spellId].modifiers;
+        return 0;
       }
 
       let totalCost = 0;
@@ -157,18 +168,24 @@ createApp({
       return totalCost;
     }
 
-    function getModifiersResume(spellId){
+    function getModifiersResume(spellId, spellModifiers){
       let mods = undefined;
       let resume = '';
       let totalBuff = 0;
       let totalDices = '';
       let area = '';
 
-      if(spellId == undefined){
+      if(spellModifiers != undefined){
+        mods = spellModifiers;
+      }
+      else if(spellId != undefined){
+        mods = character.spells[spellId].modifiers;
+      }
+      else if(modifiers.value != undefined){
         mods = modifiers.value;
       }
       else{
-        mods = character.spells[spellId].modifiers;
+        return 0;
       }
 
       for(let i = 0; i < mods.length; i++){
@@ -225,7 +242,6 @@ createApp({
 
     function saveSpell(){
       if(spellName.value == ''){
-        console.log(spellName.value)
         return;
       }
       if(spellIdAux.value > -1){
@@ -250,13 +266,45 @@ createApp({
       modifiers.value = [];
     }
 
+    function _internCastSpell(cost, spellId, spell){
+      character.actualMana -= cost;
+
+      if(spellId !== undefined){
+        spellsHistory.value.unshift(JSON.parse(JSON.stringify(character.spells[spellId])));
+        spellsTurnHistory.value.unshift(JSON.parse(JSON.stringify(character.spells[spellId])));
+      }
+      else if(spell !== undefined){
+        spellsHistory.value.unshift(JSON.parse(JSON.stringify(spell)));
+        spellsTurnHistory.value.unshift(JSON.parse(JSON.stringify(spell)));
+      }
+    }
+
     function castSpell(spellId){
       let cost = getManaTotalCost(spellId);
-      character.actualMana -= cost;
+      _internCastSpell(cost, spellId);
+    }
+
+    function castSpellByRef(spell){
+      let cost = getManaTotalCost(undefined, spell.modifiers);
+      _internCastSpell(cost, undefined, spell);
     }
 
     function maxManaPerTurn(){
       return Math.ceil(character.mana / 4);
+    }
+    
+    function getManaUsedInTurn(){
+      return spellsTurnHistory.value.reduce((total, spell) => total + getManaTotalCost(undefined, spell.modifiers), 0);
+    }
+
+    function validadeCostMagic(cost){
+      return (cost <= character.actualMana) && (cost <= maxManaPerTurn()) && ((getManaUsedInTurn() + cost) <= maxManaPerTurn())
+    }
+
+    function removeSpellFromTurn(spellId){
+      let spell = spellsTurnHistory.value.splice(spellId, 1)[0];
+      let cost = getManaTotalCost(undefined, spell.modifiers);
+      character.actualMana += cost;
     }
 
     watch(character, async (newValue) => {
@@ -269,6 +317,14 @@ createApp({
       localStorage.setItem('characterElements', JSON.stringify(newValue.elements))
       localStorage.setItem('characterSpells', JSON.stringify(newValue.spells))
     })
+    
+    watch(spellsHistory, async (newValue) => {
+      localStorage.setItem('spellsHistory', JSON.stringify(newValue))
+    }, { deep: true })
+    
+    watch(spellsTurnHistory, async (newValue) => {
+      localStorage.setItem('spellsTurnHistory', JSON.stringify(newValue))
+    }, { deep: true })
 
     return {
       // Refs
@@ -279,6 +335,9 @@ createApp({
       modifiers,
       effectTypes,
       spellName,
+      spellsHistory,
+      spellsTurnHistory,
+      spellIdAux,
       
       // Functions
       setPageTab,
@@ -303,7 +362,11 @@ createApp({
       loadSpellOnModal,
       clearModal,
       castSpell,
-      maxManaPerTurn
+      maxManaPerTurn,
+      castSpellByRef,
+      getManaUsedInTurn,
+      validadeCostMagic,
+      removeSpellFromTurn
     }
   },
   mounted(){
