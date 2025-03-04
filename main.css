@@ -44,3 +44,14 @@ footer a:hover{
   color: rgb(219, 133, 72);
   font-weight: bold;
 }
+
+.nav-item{
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.nav-link{
+  color: rgb(0, 162, 255);
+}
+.nav-link:hover{
+  color: aqua;
+}

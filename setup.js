@@ -41,4 +41,12 @@ const loadCharacterData = (app) => {
   if(localStorage.spellsTurnHistory) {
     app.spellsTurnHistory = JSON.parse(localStorage.spellsTurnHistory);
   }
+  
+  if(localStorage.characterBonusNucleo) {
+    app.character.bonusNucleo = JSON.parse(localStorage.characterBonusNucleo);
+  }
+  
+  if(localStorage.characterBuffs) {
+    app.character.buffs = JSON.parse(localStorage.characterBuffs);
+  }
 }

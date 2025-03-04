@@ -8,6 +8,17 @@ createApp({
       historyPage: 2,
     }
 
+    const attributesEnum = {
+      forca: 'Força',
+      destreza: 'Destreza',
+      impeto: 'Ímpeto',
+      carisma: 'Carisma',
+      vigor: 'Vigor',
+      intelecto: 'intelecto',
+      talento: 'Talento',
+      indefinido: 'Indefinido',
+    }
+
     const character = reactive({
       name: '',
       race: '',
@@ -15,8 +26,10 @@ createApp({
       actualMana: 0,
       life: 0,
       actualLife: 0,
+      bonusNucleo: 0,
       elements: [],
       spells: [],
+      buffs: [],
     })
 
     const spellsHistory = ref([]);
@@ -307,6 +320,21 @@ createApp({
       character.actualMana += cost;
     }
 
+    function buffFactory(attribute, bonus){
+      return{
+        name: attribute,
+        value: bonus
+      }
+    }
+
+    function addBuff(){
+      character.buffs.push(buffFactory(attributesEnum.indefinido, 0));
+    }
+
+    function removeBuff(buffId){
+      character.buffs.splice(buffId, 1);
+    }
+
     watch(character, async (newValue) => {
       localStorage.setItem('characterName', newValue.name)
       localStorage.setItem('characterRace', newValue.race)
@@ -314,8 +342,10 @@ createApp({
       localStorage.setItem('characterLife', newValue.life)
       localStorage.setItem('characterActualLife', newValue.actualLife)
       localStorage.setItem('characterActualMana', newValue.actualMana)
+      localStorage.setItem('characterBonusNucleo', newValue.bonusNucleo)
       localStorage.setItem('characterElements', JSON.stringify(newValue.elements))
       localStorage.setItem('characterSpells', JSON.stringify(newValue.spells))
+      localStorage.setItem('characterBuffs', JSON.stringify(newValue.buffs))
     })
     
     watch(spellsHistory, async (newValue) => {
@@ -338,6 +368,7 @@ createApp({
       spellsHistory,
       spellsTurnHistory,
       spellIdAux,
+      attributesEnum,
       
       // Functions
       setPageTab,
@@ -366,7 +397,9 @@ createApp({
       castSpellByRef,
       getManaUsedInTurn,
       validadeCostMagic,
-      removeSpellFromTurn
+      removeSpellFromTurn,
+      addBuff,
+      removeBuff
     }
   },
   mounted(){
