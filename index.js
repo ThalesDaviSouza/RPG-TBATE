@@ -245,7 +245,7 @@ createApp({
         return;
       }
       if(spellIdAux.value > -1){
-        character.spells.map((spell, id) => id == spellIdAux ? spellFactory(spellName.value, modifiers) : spell)  
+        character.spells = character.spells.map((spell, id) => id == spellIdAux.value ? spellFactory(spellName.value, modifiers) : spell);
       }
       else{
         character.spells.push(spellFactory(spellName.value, modifiers))
