@@ -99,6 +99,9 @@ createApp({
     function getElementNivel(elementId){
       return character.elements.find(elem => elem.id == elementId).nivel;
     }
+    function getElementName(elementId){
+      return elements.find((elem, id) => id == elementId).name;
+    }
     
     function getElement(elementId){
       return elements.find((elem, id) => id == elementId);
@@ -323,7 +326,9 @@ createApp({
     function buffFactory(attribute, bonus){
       return{
         name: attribute,
-        value: bonus
+        value: bonus,
+        elementId: -1,
+        nivel: -1
       }
     }
 
@@ -335,6 +340,15 @@ createApp({
       character.buffs.splice(buffId, 1);
     }
 
+    function setBuffBonus(buff){
+      buff.value = getElementEffect(buff.elementId, buff.nivel).buff;
+    }
+
+    function getTotalAttributeBonus(attribute){
+      let total = character.buffs.reduce((total, actual) => actual.attribute == attribute ? actual.value + total : total, 0)
+      return total;
+    }
+
     watch(character, async (newValue) => {
       localStorage.setItem('characterName', newValue.name)
       localStorage.setItem('characterRace', newValue.race)
@@ -343,9 +357,16 @@ createApp({
       localStorage.setItem('characterActualLife', newValue.actualLife)
       localStorage.setItem('characterActualMana', newValue.actualMana)
       localStorage.setItem('characterBonusNucleo', newValue.bonusNucleo)
-      localStorage.setItem('characterElements', JSON.stringify(newValue.elements))
+      localStorage.setItem('characterElements', JSON.stringify(newValue.elements.filter(elem => elem.nivel > 0)))
       localStorage.setItem('characterSpells', JSON.stringify(newValue.spells))
       localStorage.setItem('characterBuffs', JSON.stringify(newValue.buffs))
+
+      // UpdateBuffs
+      newValue.buffs.forEach(buff => {
+        if(buff.elementId >= 0 && buff.nivel > 0){
+          setBuffBonus(buff)
+        }
+      })
     })
     
     watch(spellsHistory, async (newValue) => {
@@ -399,7 +420,10 @@ createApp({
       validadeCostMagic,
       removeSpellFromTurn,
       addBuff,
-      removeBuff
+      removeBuff,
+      getElementName,
+      setBuffBonus,
+      getTotalAttributeBonus
     }
   },
   mounted(){
