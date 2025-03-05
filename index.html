@@ -21,25 +21,25 @@
 <body id="app" class="d-flex flex-column">
   <header>
     <div class="d-flex flex-row align-items-center">
-      <div class="d-flex flex-row align-items-center">
+      <div class="d-flex flex-row align-items-center col-auto">
         <i class="bi bi-person-circle m-1 ms-2" style="font-size: 42px;"></i>
         <h1 class="m-0 ps-1">{{ character.name }}</h1>
       </div>
-      <div class="col-3 ms-3">
+      <div class="flex-grow-1 flex-md-grow-0 col-md-6 mx-3">
         <div class="progress mb-2 fw-bold text-body-secondary" role="progressbar">
-          <div class="d-flex position-absolute">
-            <input type="number" min="0" step="1" class="hidden-input" id="actualLife" v-model="character.actualLife" @focus="saveActualLife" @keyup.enter="computeLifeChange"> <br/>
-            <span>/{{character.life}}</span>
-          </div>
+          <strong class="d-flex flex-row position-absolute">
+            <input type="number" min="0" step="1" class="hidden-input w-50" id="actualLife" v-model="character.actualLife" @focus="saveActualLife" @keyup.enter="computeLifeChange"> <br/>
+            <label for="actualLife">/{{character.life}}</label>
+          </strong>
           <div class="progress-bar bg-danger d-flex flex-row" :style="{ 'width': lifePercentage() + '%'}">
           </div>
         </div>
 
         <div class="progress fw-bold text-body-secondary" role="progressbar">
-          <div class="d-flex position-absolute">
-            <input type="number" min="0" step="1" class="hidden-input" id="actualMana" v-model="character.actualMana" @focus="saveActualMana" @keyup.enter="computeManaChange"> <br/>
-            <span>/{{character.mana}}</span>
-          </div>
+          <strong class="d-flex position-absolute">
+            <input type="number" min="0" step="1" class="hidden-input w-50" id="actualMana" v-model="character.actualMana" @focus="saveActualMana" @keyup.enter="computeManaChange"> <br/>
+            <label for="actualMana">/{{character.mana}}</label>
+          </strong>
           <div class="progress-bar d-flex flex-row" :style="{ 'width': manaPercentage() + '%'}"></div>
         </div>
       </div>
@@ -60,8 +60,8 @@
   <main style="flex: 1;">
     <div class="container mt-2" v-show="actualPage == pages.homePage">
       <h1>Home</h1>
-      <div class="d-flex flex-row">
-        <div class="d-flex flex-column flex-grow-1">
+      <div class="row">
+        <div class="d-flex flex-column col-12 col-md-7 pe-md-5">
           <h2>Magias</h2>
           <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#criarMagiasModal" @click="clearModal()">
             Criar magia
@@ -85,7 +85,7 @@
           </div>
         </div>
 
-        <div class="col-5 ms-5 d-flex flex-column">
+        <div class="col-12 col-md-5 mt-5 mt-md-0 d-flex flex-column">
           <div style="flex: 1;">
             <div class="d-flex flex-row mb-3 align-items-center justify-content-between">
               <div class="d-flex flex-column">
@@ -104,7 +104,7 @@
             </div>
           </div>
 
-          <div>
+          <div class="mt-5 mt-md-0">
             <div class="d-flex flex-row align-items-baseline">
               <h4 class="me-3">Buffs ativos</h4>
               <a class="btn btn-outline-light btn-sm border-0" @click="addBuff()">
@@ -117,7 +117,7 @@
                 <input type="number" min="0" step="1" class="text-bg-dark border border-light-subtle rounded-pill p-1 px-3 mt-2 mb-4" placeholder="Bônus do Núcleo" aria-label="Bônus do Núcleo" id="bonusNucleo" v-model="character.bonusNucleo"> <br/>
               </div>
 
-              <div>
+              <div class="table-responsive">
                 <table class="table table-dark table-bordered">
                   <thead>
                     <tr>
@@ -154,7 +154,7 @@
                   </option>
                 </select>
 
-                <span class="px-5 text-bg-dark">{{ buff.value }}</span>
+                <span class="px-2 px-md-5 text-bg-dark">{{ buff.value }}</span>
                 <a class="btn btn-sm btn-outline-danger me-1" @click="removeBuff(buffId)">
                   <i class="bi bi-x-lg"></i>
                 </a>
