@@ -96,6 +96,10 @@ createApp({
     function hasElement(elementId){
       return character.elements.find(elem => elem.id == elementId) != undefined && character.elements.find(elem => elem.id == elementId).nivel > 0;
     }
+    function isElementJoker(elementId){
+      let element = elements[elementId];
+      return (element.name == elementsJokers.outroSimple) || (element.name == elementsJokers.outroDesviantSimple) || (element.name == elementsJokers.outroDesviantComplex);   
+    }
     function getElementNivel(elementId){
       return character.elements.find(elem => elem.id == elementId).nivel;
     }
@@ -423,7 +427,8 @@ createApp({
       removeBuff,
       getElementName,
       setBuffBonus,
-      getTotalAttributeBonus
+      getTotalAttributeBonus,
+      isElementJoker,
     }
   },
   mounted(){

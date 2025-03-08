@@ -298,16 +298,23 @@
                     </a>
                     <ul class="dropdown-menu">
                       <template v-for="(element, elementId) in elements">
-                        <li class="dropend" v-if="hasElement(elementId)">
+                        <li class="dropend" v-if="hasElement(elementId) || isElementJoker(elementId)">
                           <a class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside">
                             {{ element.name }}
                           </a>
                           <ul class="dropdown-menu">
-                            <li class="dropdown-item" v-for="nivel in parseInt(getElementNivel(elementId))">
+                            <li class="dropdown-item" v-for="nivel in parseInt(getElementNivel(elementId))" v-if="!isElementJoker(elementId)">
                               <a class="dropdown-item" @click="updateModifiers(modifierId, effectType, elementId, nivel)">
                                 {{ nivel }}
                               </a>
                             </li>
+                            
+                            <li class="dropdown-item" v-for="nivel in parseInt(6)" v-else>
+                              <a class="dropdown-item" @click="updateModifiers(modifierId, effectType, elementId, nivel)">
+                                {{ nivel }}
+                              </a>
+                            </li>
+
                           </ul>
                         </li>
                       </template>

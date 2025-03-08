@@ -78,6 +78,12 @@ const elementFactory = (elementName, elementType) => {
   }
 }
 
+const elementsJokers = {
+  outroSimple: 'Outro Simples',
+  outroDesviantSimple: 'Outro Desviante simples',
+  outroDesviantComplex: 'Outro Desviante complexo'
+}
+
 const elements = [
   elementFactory('Fogo', elementTypes.basic),
   elementFactory('Água', elementTypes.basic),
@@ -92,4 +98,8 @@ const elements = [
 
   elementFactory('Magma', elementTypes.desviantComplex),
   elementFactory('Planta', elementTypes.desviantComplex),
+
+  elementFactory(elementsJokers.outroSimple, elementTypes.basic),
+  elementFactory(elementsJokers.outroDesviantSimple, elementTypes.desviantSimple),
+  elementFactory(elementsJokers.outroDesviantComplex, elementTypes.desviantComplex),
 ]
