@@ -28,14 +28,14 @@ const basicEffects = [
   {
     tier: 0,
     cost: 0,
-    dano: '1d4'
+    dano: '1d2'
   },
   //Magics
-  effectFactory(1, 1, 1, '1d6', '1d4/2', 1, 'Um Alvo Adjacente'),
-  effectFactory(2, 3, 2, '1d8', '1d4', 2, '4 metros'),
-  effectFactory(3, 5, 4, '1d10', '1d6', 3, '9 metros'),
-  effectFactory(4, 9, 6, '1d12', '1d8', 4, '18 metros'),
-  effectFactory(5, 16, 8, '2d8', '1d10', 5, '24 metros'),
+  effectFactory(1, 1, 1, '1d4', '1d2', 1, 'Um Alvo Adjacente'),
+  effectFactory(2, 3, 2, '1d6', '1d4', 2, '4 metros'),
+  effectFactory(3, 5, 4, '1d8', '1d6', 3, '9 metros'),
+  effectFactory(4, 9, 6, '1d10', '1d8', 4, '18 metros'),
+  effectFactory(5, 16, 8, '2d6', '1d10', 5, '24 metros'),
   effectFactory(6, 24, 10, '2d10', '1d12', 6, '90 metros'),  
 ]
 
@@ -44,15 +44,15 @@ const desviantSimpleEffects = [
   {
     tier: 0,
     cost: 0,
-    dano: '1d6'
+    dano: '1d4'
   },
   //Magics
-  effectFactory(1, 2, 2, '2d4', '1d4', 2, 'Um Alvo Adjacente'),
-  effectFactory(2, 4, 3, '2d6', '1d6', 3, '4 metros'),
-  effectFactory(3, 9, 5, '2d8', '2d4', 4, '9 metros'),
-  effectFactory(4, 12, 7, '2d10', '1d10', 5, '18 metros'),
-  effectFactory(5, 18, 9, '2d12', '2d6', 6, '24 metros'),
-  effectFactory(6, 28, 12, '3d12', '2d8', 7, '90 metros'),  
+  effectFactory(1, 2, 2, '1d6', '1d4', 2, 'Um Alvo Adjacente'),
+  effectFactory(2, 4, 3, '2d4', '1d6', 3, '4 metros'),
+  effectFactory(3, 9, 5, '1d10', '2d4', 4, '9 metros'),
+  effectFactory(4, 12, 7, '2d6', '1d10', 5, '18 metros'),
+  effectFactory(5, 18, 9, '2d8', '2d6', 6, '24 metros'),
+  effectFactory(6, 28, 12, '2d12', '2d8', 7, '90 metros'),  
 ]
 
 const desviantComplexEffects = [
@@ -63,12 +63,12 @@ const desviantComplexEffects = [
     dano: '1d8'
   },
   //Magics
-  effectFactory(1, 2, 2, '2d6', '1d6', 3, 'Um Alvo Adjacente'),
-  effectFactory(2, 4, 3, '2d8', '2d4', 4, '4 metros'),
-  effectFactory(3, 9, 5, '2d10', '1d10', 5, '9 metros'),
-  effectFactory(4, 12, 7, '2d12', '2d6', 6, '18 metros'),
-  effectFactory(5, 18, 9, '3d12', '2d8', 7, '24 metros'),
-  effectFactory(6, 28, 12, '4d10', '5d4', 8, '90 metros'),  
+  effectFactory(1, 2, 2, '1d10', '1d6', 3, 'Um Alvo Adjacente'),
+  effectFactory(2, 4, 3, '2d6', '2d4', 4, '4 metros'),
+  effectFactory(3, 9, 5, '2d8', '1d10', 5, '9 metros'),
+  effectFactory(4, 12, 7, '2d10', '2d6', 6, '18 metros'),
+  effectFactory(5, 18, 9, '2d12', '2d8', 7, '24 metros'),
+  effectFactory(6, 28, 12, '3d10', '5d4', 8, '90 metros'),  
 ]
 
 const elementFactory = (elementName, elementType) => {
